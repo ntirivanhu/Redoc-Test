@@ -1,0 +1,138 @@
+swagger: '2.0'
+
+host: testapi.peachpayments.com
+basePath: /v1
+schemes:
+ - https
+  
+info:
+  version: '1.0'
+  title: 'Checkout Backoffice APIs'
+  
+  description: 'You can perform different types of backoffice operations using our server-to-server REST API.
+  
+  
+    -Check transaction status 
+    
+    
+    -Refund a successfully completed debit transaction
+  
+  
+  Backoffice operations can be performed against initial payments that were generated using our payment initiation API.'
+  
+  contact:
+    name: Peach Payments Support 
+    email: support@peachpayments.com
+    url: https://support.peachpayments.com/support/home
+    
+  
+paths:
+          
+  /checkout/status:
+    get:
+      tags:
+      - Get Transaction Status
+      summary: Get the status of a transaction using the Peach unique ID as a reference
+      operationId: checkoutStatus
+      consumes:
+      - application/x-www-form-urlencoded
+      - application/json
+      produces:
+      - application/json
+      
+      parameters:
+      - in: query
+        name: authentication.entityId
+        type: string
+        description: The entity required to authorize the request. This will be provided to you by Peach Payments. Echoes the value you used for the initial payment request
+      - in: query
+        name: checkoutId
+        type: string
+        description: The unique ID of the entire Checkout instance
+        
+      - in: query
+        name: merchantTransactionId
+        type: string
+        description: Merchant-provided reference number, should be unique for your transactions. Echoes the value sent in the initial payment request 
+        
+      - in: query
+        name: signature
+        type: string
+        description: SHA-256 hash of the request body used to verify the integrity of the payment request, ensuring that only the merchant sending the request is accepted
+        
+        
+          
+
+          
+    
+      responses:
+        200:
+          description: Successfully queried status
+        400:
+          description: Invalid signature
+          
+          
+  /checkout/refund:
+    post:
+      summary: Refund a transaction
+      description: Refund an existing, successful transaction
+      responses:
+        200:
+          description: OK
+    
+      tags:
+      - Refund Transaction
+      operationId: refundTransaction
+      produces:
+      - application/json
+      
+      parameters:
+      - in: body
+        name: body
+        description: Creating the Checkout payment
+        required: true
+        schema:
+          $ref: '#/definitions/Refund'
+          
+      
+definitions:
+  
+  Refund:
+    type: object
+    properties:
+    
+      amount:
+        type: integer 
+        format: int64
+        example: 10.00 
+        description: Indicates the refund amount. This value can be be less than or equal to the initial debit (DB) transcation value but not more than that value. The dot is used as decimal separator
+        
+      authentication.entityId:
+        type: integer
+        format: int64
+        example: 8ac7a4ca68c22c4d0168c2caab2e0025
+        description: The entity required to authorize the request. This will value should be the same as the entityId value used for the initial debit (DB) payment
+        
+      currency:
+        type: string 
+        format: string 
+        example: ZAR
+        description: The currency code of the payment request's amount (ISO 4217)
+        
+      id:
+        type: string 
+        format: string 
+        example: 8ac7a4a16b4f6a06016b50fb930431e8 
+        description: The unique ID of the debit (DB) transaction to be refunded
+        
+      paymentType:
+        type: string 
+        format: string 
+        example: RF 
+        description: The payment type for the request. You can send payment requests with one of the following types RF 
+        
+      signature:
+        type: string 
+        format: string 
+        example: a668342244a9c77b08a2f9090d033d6e2610b431a5c0ca975f32035ed06164f4 
+        description: Token to verify the integrity of the payment, ensuring that only the merchant sending the request is accepted
