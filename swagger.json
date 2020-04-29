@@ -1,18 +1,18 @@
 {
   "swagger" : "2.0",
-  "info" : {
-    "description" : "You can perform different types of backoffice operations using our server-to-server REST API.\n\n-Check transaction status \n\n-Refund a successfully completed debit transaction\n\nBackoffice operations can be performed against initial payments that were generated using our payment initiation API.",
-    "version" : "1.0",
-    "title" : "Checkout Backoffice APIs",
-    "contact" : {
-      "name" : "Peach Payments Support",
-      "url" : "https://support.peachpayments.com/support/home",
-      "email" : "support@peachpayments.com"
-    }
-  },
   "host" : "testapi.peachpayments.com",
   "basePath" : "/v1",
   "schemes" : [ "https" ],
+  "info" : {
+    "version" : "1.0",
+    "title" : "Checkout Backoffice APIs",
+    "description" : "You can perform different types of backoffice operations using our server-to-server REST API.\n\n-Check transaction status\n\n-Refund a successfully completed debit transaction\n\nBackoffice operations can be performed against initial payments that were generated using our payment initiation API.",
+    "contact" : {
+      "name" : "Peach Payments Support",
+      "email" : "support@peachpayments.com",
+      "url" : "https://support.peachpayments.com/support/home"
+    }
+  },
   "paths" : {
     "/checkout/status" : {
       "get" : {
@@ -22,29 +22,25 @@
         "consumes" : [ "application/x-www-form-urlencoded", "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
+          "in" : "query",
           "name" : "authentication.entityId",
-          "in" : "query",
-          "description" : "The entity required to authorize the request. This will be provided to you by Peach Payments. Echoes the value you used for the initial payment request",
-          "required" : false,
-          "type" : "string"
+          "type" : "string",
+          "description" : "The entity required to authorize the request. This will be provided to you by Peach Payments. Echoes the value you used for the initial payment request"
         }, {
+          "in" : "query",
           "name" : "checkoutId",
-          "in" : "query",
-          "description" : "The unique ID of the entire Checkout instance",
-          "required" : false,
-          "type" : "string"
+          "type" : "string",
+          "description" : "The unique ID of the entire Checkout instance"
         }, {
+          "in" : "query",
           "name" : "merchantTransactionId",
-          "in" : "query",
-          "description" : "Merchant-provided reference number, should be unique for your transactions. Echoes the value sent in the initial payment request",
-          "required" : false,
-          "type" : "string"
+          "type" : "string",
+          "description" : "Merchant-provided reference number, should be unique for your transactions. Echoes the value sent in the initial payment request"
         }, {
-          "name" : "signature",
           "in" : "query",
-          "description" : "SHA-256 hash of the request body used to verify the integrity of the payment request, ensuring that only the merchant sending the request is accepted",
-          "required" : false,
-          "type" : "string"
+          "name" : "signature",
+          "type" : "string",
+          "description" : "SHA-256 hash of the request body used to verify the integrity of the payment request, ensuring that only the merchant sending the request is accepted"
         } ],
         "responses" : {
           "200" : {
@@ -58,9 +54,14 @@
     },
     "/checkout/refund" : {
       "post" : {
-        "tags" : [ "Refund Transaction" ],
         "summary" : "Refund a transaction",
         "description" : "Refund an existing, successful transaction",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "Refund Transaction" ],
         "operationId" : "refundTransaction",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -71,12 +72,7 @@
           "schema" : {
             "$ref" : "#/definitions/Refund"
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK"
-          }
-        }
+        } ]
       }
     }
   },
@@ -87,7 +83,7 @@
         "amount" : {
           "type" : "integer",
           "format" : "int64",
-          "example" : 10,
+          "example" : 10.0,
           "description" : "Indicates the refund amount. This value can be be less than or equal to the initial debit (DB) transcation value but not more than that value. The dot is used as decimal separator"
         },
         "authentication.entityId" : {
